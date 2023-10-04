@@ -2,7 +2,7 @@ version: '3'
 
 services:
   cassandra:
-    image: cassandra:latest
+    build: .
     ports:
       - "9042:9042"
 
@@ -10,15 +10,18 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: pass
+    volumes:
+      - mongodata:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
   redis:
     image: redis:latest
-    environment:
-      - REDIS_PASSWORD=password
     ports:
       - "6379:6379"
-    command: redis-server --requirepass mysecretpassword
+    volumes:
+      - redisdata:/data
 
+volumes:
+  mongodata:
+  cassandradata:
+  redisdata:
