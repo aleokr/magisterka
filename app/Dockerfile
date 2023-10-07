@@ -1,4 +1,4 @@
-FROM cassandra:latest
+FROM cassandra:4.1.3
 
 ENV LANG C.UTF-8
 
