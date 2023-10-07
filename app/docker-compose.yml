@@ -5,6 +5,7 @@ services:
     build: .
     ports:
       - "9042:9042"
+      - "9160:9160"
 
   mongodb:
     image: mongo:latest
