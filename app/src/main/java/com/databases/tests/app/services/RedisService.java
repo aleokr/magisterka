@@ -1,21 +1,24 @@
 package com.databases.tests.app.services;
 
+import com.databases.tests.app.data.RedisUser;
+import com.databases.tests.app.repository.RedisUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisUserRepository redisUserRepository;
 
-    public void setKeyValue(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value);
+    public void saveUser(RedisUser redisUser) {
+        redisUserRepository.save(redisUser);
     }
 
-    public Object getValueByKey(String key) {
-        return redisTemplate.opsForValue().get(key);
+    public RedisUser findUser(UUID id) {
+        return redisUserRepository.findById(id).orElse(null);
     }
 
 }

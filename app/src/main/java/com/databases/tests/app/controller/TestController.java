@@ -1,14 +1,18 @@
 package com.databases.tests.app.controller;
 
+import com.databases.tests.app.data.CassandraUser;
+import com.databases.tests.app.data.MongoUser;
+import com.databases.tests.app.data.RedisUser;
+import com.databases.tests.app.services.CassandraService;
 import com.databases.tests.app.services.MongoService;
 import com.databases.tests.app.services.RedisService;
 import lombok.RequiredArgsConstructor;
-import org.bson.Document;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -17,22 +21,29 @@ public class TestController {
 
     private final RedisService userRedisService;
     private final MongoService mongoService;
+    private final CassandraService cassandraService;
 
     @GetMapping("/redis")
     public void getUser() {
-        userRedisService.setKeyValue("testRedis", "qaw");
-        System.out.println(userRedisService.getValueByKey("testRedis"));
+        UUID id = UUID.randomUUID();
+        RedisUser redisUser = new RedisUser(id, "Sebuszek", 26, new Date(), 1.8, true);
+        userRedisService.saveUser(redisUser);
+        System.out.println(userRedisService.findUser(id));
     }
 
     @GetMapping("/mongo")
     public void getMongoUser() {
-        Document document = new Document();
-        document.put("name", "ola");
-        document.put("age", 1);
-        document.put("height", 1.9);
-        document.put("birthDate", new Date());
-        document.put("isAvailable", true);
-        mongoService.createDocument(document);
-        System.out.println(mongoService.findDocumentById(document.get("_id").toString()));
+        UUID id = UUID.randomUUID();
+        MongoUser mongoUser = new MongoUser(id, "Sebuszek", 26, new Date(), 1.8, true);
+        mongoService.saveUser(mongoUser);
+        System.out.println(mongoService.findUser(id));
+    }
+
+    @GetMapping("/cassandra")
+    public void getCassandraUser() {
+        UUID id = UUID.randomUUID();
+        CassandraUser cassandraUser = new CassandraUser(id, "Sebuszek", 26, null, 1.8, true);
+        cassandraService.saveUser(cassandraUser);
+        System.out.println(cassandraService.findUser(id));
     }
 }
