@@ -6,6 +6,8 @@ import com.databases.tests.app.data.RedisUser;
 import com.databases.tests.app.services.CassandraService;
 import com.databases.tests.app.services.MongoService;
 import com.databases.tests.app.services.RedisService;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,9 @@ public class SchemaValidationService {
         addCassandraUsers(cassandraUsers);
         addMongoUsers(mongoUsers);
         addRedisUsers(redisUsers);
+
+        Metrics.counter("allOperations").increment(100);
+        Metrics.counter("allValidData").increment(100);
     }
 
     public void halfWrongData() {
@@ -53,6 +58,11 @@ public class SchemaValidationService {
         addCassandraUsers(cassandraUsers);
         addMongoUsers(mongoUsers);
         addRedisUsers(redisUsers);
+
+        Metrics.counter("allOperations").increment(100);
+        Metrics.counter("allInvalidOperations").increment(50);
+        Metrics.counter("allValidData").increment(50);
+        Metrics.counter("allWrongData").increment(50);
     }
 
     public void allWrongData() {
@@ -65,6 +75,10 @@ public class SchemaValidationService {
         addCassandraUsers(cassandraUsers);
         addMongoUsers(mongoUsers);
         addRedisUsers(redisUsers);
+
+        Metrics.counter("allOperations").increment(100);
+        Metrics.counter("allInvalidOperations").increment(100);
+        Metrics.counter("allWrongData").increment(100);
     }
 
     public void halfInvalidData() {
@@ -78,6 +92,12 @@ public class SchemaValidationService {
         addCassandraUsers(cassandraUsers);
         addMongoUsers(mongoUsers);
         addRedisUsers(redisUsers);
+
+
+        Metrics.counter("allOperations").increment(100);
+        Metrics.counter("allInvalidOperations").increment(50);
+        Metrics.counter("allValidData").increment(50);
+        Metrics.counter("allInvalidData").increment(50);
     }
 
     public void allInvalidData() {
@@ -90,9 +110,13 @@ public class SchemaValidationService {
         addCassandraUsers(cassandraUsers);
         addMongoUsers(mongoUsers);
         addRedisUsers(redisUsers);
+
+        Metrics.counter("allOperations").increment(100);
+        Metrics.counter("allInvalidOperations").increment(100);
+        Metrics.counter("allInvalidData").increment(100);
     }
 
-    private void createValidUsers(List<CassandraUser> cassandraUsers, List<MongoUser> mongoUsers, List<RedisUser> redisUsers, int iteration){
+    private void createValidUsers(List<CassandraUser> cassandraUsers, List<MongoUser> mongoUsers, List<RedisUser> redisUsers, int iteration) {
         for (int i = 0; i < iteration; i++) {
             UUID id = validDataGenerator.generateId();
             String name = validDataGenerator.generateName();
@@ -107,7 +131,7 @@ public class SchemaValidationService {
         }
     }
 
-    private void createUsersWithWrongData(List<CassandraUser> cassandraUsers, List<MongoUser> mongoUsers, List<RedisUser> redisUsers, int iteration){
+    private void createUsersWithWrongData(List<CassandraUser> cassandraUsers, List<MongoUser> mongoUsers, List<RedisUser> redisUsers, int iteration) {
         for (int i = 0; i < iteration; i++) {
             UUID id = validDataGenerator.generateId();
             Double name = wrongTypeDataGenerator.generateName();
@@ -122,7 +146,7 @@ public class SchemaValidationService {
         }
     }
 
-    private void createInvalidUsers(List<CassandraUser> cassandraUsers, List<MongoUser> mongoUsers, List<RedisUser> redisUsers, int iteration){
+    private void createInvalidUsers(List<CassandraUser> cassandraUsers, List<MongoUser> mongoUsers, List<RedisUser> redisUsers, int iteration) {
         for (int i = 0; i < iteration; i++) {
             UUID id = validDataGenerator.generateId();
             String name = invalidDataGenerator.generateName();
@@ -137,35 +161,35 @@ public class SchemaValidationService {
         }
     }
 
-    private void addCassandraUsers(List<CassandraUser> cassandraUsers){
+    private void addCassandraUsers(List<CassandraUser> cassandraUsers) {
         for (CassandraUser cassandraUser : cassandraUsers) {
             try {
                 cassandraService.saveUser(cassandraUser);
-                // increase valid prometheus metric
-            } catch (Exception e){
-                //increase invalid prometheus metric
+                Metrics.counter("addCassandraUser", List.of(Tag.of("success", String.valueOf(true)))).increment();
+            } catch (Exception e) {
+                Metrics.counter("addCassandraUser", List.of(Tag.of("success", String.valueOf(false)))).increment();
             }
         }
     }
 
-    private void addMongoUsers(List<MongoUser> mongoUsers){
+    private void addMongoUsers(List<MongoUser> mongoUsers) {
         for (MongoUser mongoUser : mongoUsers) {
             try {
                 mongoService.saveUser(mongoUser);
-                // increase valid prometheus metric
-            } catch (Exception e){
-                //increase invalid prometheus metric
+                Metrics.counter("addMongoUser", List.of(Tag.of("success", String.valueOf(true)))).increment();
+            } catch (Exception e) {
+                Metrics.counter("addMongoUser", List.of(Tag.of("success", String.valueOf(false)))).increment();
             }
         }
     }
 
-    private void addRedisUsers(List<RedisUser> redisUsers){
+    private void addRedisUsers(List<RedisUser> redisUsers) {
         for (RedisUser redisUser : redisUsers) {
             try {
                 redisService.saveUser(redisUser);
-                // increase valid prometheus metric
-            } catch (Exception e){
-                //increase invalid prometheus metric
+                Metrics.counter("addRedisUser", List.of(Tag.of("success", String.valueOf(true)))).increment();
+            } catch (Exception e) {
+                Metrics.counter("addRedisUser", List.of(Tag.of("success", String.valueOf(false)))).increment();
             }
         }
     }
