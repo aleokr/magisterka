@@ -2,6 +2,8 @@ db = db.getSiblingDB('test');
 db.createCollection("users");
 db.users.createIndex({name: 1});
 
+
+// walidacja schematu - zakomentować do końca jeśli nie są przeprowadzane testy dla walidacji schematu
 db.runCommand(
     {
         collMod: "users",
@@ -40,6 +42,6 @@ db.runCommand(
             }
         },
         validationLevel: "strict",
-        validationAction: "error"
+        validationAction: "warn"
     }
 );

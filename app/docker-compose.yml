@@ -6,7 +6,7 @@ services:
     ports:
       - "9042:9042"
     volumes:
-      - cassandradata:/data
+      - cassandradata:/var/lib/cassandra
   mongodb:
     image: mongo:7.0.0
     ports:
@@ -34,8 +34,7 @@ services:
     container_name: grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
-    ports:
-      - "3000:3000"
+    network_mode: 'host'
     volumes:
       - grafana-storage:/var/lib/grafana
 
