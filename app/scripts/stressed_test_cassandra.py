@@ -9,7 +9,7 @@ cluster = Cluster(['127.0.0.1'])  # Adresy IP węzłów Cassandra
 
 session = cluster.connect()
 keyspace = 'userkeyspace'
-session.default_consistency_level = ConsistencyLevel.ALL
+session.default_consistency_level = ConsistencyLevel.ONE
 
 # Tworzenie tabeli, jeśli nie istnieje
 session.execute(f'''
@@ -75,7 +75,7 @@ def update_data():
         )
 
 # Uruchamianie operacji
-for _ in range(10):
+for _ in range(2):
     write_data()
     read_data()
     update_data()

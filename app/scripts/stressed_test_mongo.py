@@ -42,10 +42,10 @@ def update_data():
         collection.update_one({"_id": user_id}, {"$set": {"age": new_age}})
 
 # Wykonanie testów obciążeniowych
-for _ in range(10):
+for _ in range(1):
     write_data()
     read_data()
     update_data()
-    time.sleep(5)
+    # time.sleep(5)
 # Zamykanie połączenia z bazą danych
 client.close()

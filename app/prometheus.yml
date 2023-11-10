@@ -9,5 +9,8 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: ['localhost:8080']
+  - job_name: 'cassandra'
+    static_configs:
+      - targets: [ 'cassandra:8080' ]
 
 
