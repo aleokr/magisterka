@@ -42,7 +42,7 @@ def update_data():
         collection.update_one({"_id": user_id}, {"$set": {"age": new_age}})
 
 # Wykonanie testów obciążeniowych
-for _ in range(1):
+for _ in range(1000):
     write_data()
     read_data()
     update_data()

@@ -31,6 +31,6 @@ if __name__ == "__main__":
     # Połączenie z Redis
     r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
 
-    for _ in range(10):
+    for _ in range(1000):
         perform_redis_operations(r)
-        time.sleep(5)
+        time.sleep(1)

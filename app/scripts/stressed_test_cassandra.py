@@ -75,7 +75,7 @@ def update_data():
         )
 
 # Uruchamianie operacji
-for _ in range(2):
+for _ in range(100):
     write_data()
     read_data()
     update_data()

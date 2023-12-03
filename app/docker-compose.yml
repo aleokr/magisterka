@@ -16,6 +16,7 @@ services:
     image: mongo:7.0.2
     ports:
       - "27017:27017"
+#    network_mode: "host"
     volumes:
       - mongodata:/data/db
       - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
